@@ -5,31 +5,42 @@ services:
       dockerfile: Dockerfile
     environment:
       POSTGRES_HOST: database
-      POSTGRES_PORT: ${POSTGRES_PORT}
-      POSTGRES_DATABASE: ${POSTGRES_DATABASE}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_CREATE_DROP: ${POSTGRES_CREATE_DROP}
-      SECRET_KEY: ${SECRET_KEY}
-      JWT_EXPIRATION_TIME: ${JWT_EXPIRATION_TIME}
-      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
-      SWAGGER_ENABLED: ${SWAGGER_ENABLED}
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: finances
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_CREATE_DROP: update
+      SECRET_KEY:
+      JWT_EXPIRATION_TIME: 3600000
+      CORS_ALLOWED_ORIGINS: https://psychic-lamp-5gqjgpqwvg4rc475w-4200.app.github.dev
+      SWAGGER_ENABLED: false
     ports:
       - "8080:8080"
     depends_on:
       - database
 
+  cloudbeaver:
+    image: dbeaver/cloudbeaver:latest
+    restart: always
+    ports:
+      - "8978:8978"
+    depends_on:
+      - database
+    volumes:
+      - cloudbeaver-data:/opt/cloudbeaver/workspace
+
   database:
     image: postgres:16.3
     restart: always
     environment:
-      POSTGRES_DB: ${POSTGRES_DATABASE}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: finances
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
-      - "${POSTGRES_PORT}:5432"
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
 volumes:
   pgdata:
+  cloudbeaver-data:
